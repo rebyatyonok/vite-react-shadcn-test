@@ -71,6 +71,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply m-0 bg-background text-foreground;
+  }
+
+  .page {
+    @apply px-10 pb-5 pt-0;
+  }
+
+  .max-width {
+    @apply max-w-[1200px] mx-auto;
   }
 }

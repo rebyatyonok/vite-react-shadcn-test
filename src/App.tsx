@@ -1,12 +1,41 @@
+import { Redirect, Route, Switch } from "wouter";
+import { QueryClientProvider, QueryClient } from "react-query";
+
+import { CharactersListPage } from "@/pages/characters";
+import { CharacterPage } from "@/pages/characters/:id";
+import { NotFoundPage } from "./pages/404";
+
+import { Header } from "@/features/header";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+
 import "./App.css";
-import { Button } from "./components/ui/button";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Vite + React</h1>
-      <Button>shadcn/ui</Button>
-    </>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <div className="flex flex-col w-full h-full">
+          <Header />
+
+          <Switch>
+            <Route path="/characters" component={CharactersListPage} />
+            <Route path="/characters/:id">
+              {(params) =>
+                params.id ? (
+                  <CharacterPage id={parseInt(params.id)} />
+                ) : (
+                  <Redirect to="/404" />
+                )
+              }
+            </Route>
+
+            <Route path="/404" component={NotFoundPage} />
+          </Switch>
+        </div>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 
