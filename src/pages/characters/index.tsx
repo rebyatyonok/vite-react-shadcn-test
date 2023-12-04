@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 import peoplesApi from "@/api/characters";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,56 +10,11 @@ import {
   CharacterCardSkeleton,
 } from "@/features/character-card";
 
-function useDebouncedValue<T>(value: T, time = 250) {
-  const [debounceValue, setDebounceValue] = useState(value);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setDebounceValue(value);
-    }, time);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [value, time]);
-
-  return debounceValue;
-}
-
-function usePagination(pageSize = 10) {
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-
-  const canGoToNextPage = useMemo(
-    () => total - pageSize * page > 0,
-    [total, pageSize, page]
-  );
-  const canGoToPrevPage = useMemo(() => page > 1, [page]);
-
-  const toNextPage = () => {
-    if (canGoToNextPage) setPage((page) => page + 1);
-  };
-  const toPrevPage = () => {
-    if (canGoToPrevPage) setPage((page) => page - 1);
-  };
-
-  useEffect(() => {
-    setPage(1);
-  }, [pageSize]);
-
-  return {
-    page,
-    total,
-    canGoToNextPage,
-    canGoToPrevPage,
-    pageSize,
-    toNextPage,
-    toPrevPage,
-    setTotal,
-  };
-}
+import { usePagination } from "@/hooks/usePagination";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 export function CharactersListPage() {
+  // TODO: sync state to url
   const [name, setName] = useState("");
   const pagination = usePagination(10);
   const debouncedName = useDebouncedValue(name);
@@ -66,7 +22,10 @@ export function CharactersListPage() {
   const peoplesRequest = useQuery(
     ["characters", pagination.page + debouncedName],
     ({ signal }) =>
-      peoplesApi.getList({ page: pagination.page, search: name }, { signal }),
+      peoplesApi.getList(
+        { page: pagination.page, search: debouncedName },
+        { signal }
+      ),
     { keepPreviousData: true }
   );
 

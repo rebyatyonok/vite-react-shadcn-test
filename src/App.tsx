@@ -19,6 +19,7 @@ function App() {
         <div className="flex flex-col w-full h-full">
           <Header />
 
+          <Redirect to="/characters" />
           <Switch>
             <Route path="/characters" component={CharactersListPage} />
             <Route path="/characters/:id">
