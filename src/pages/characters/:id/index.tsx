@@ -1,8 +1,9 @@
 import { useQuery } from "react-query";
 
-import charactersApi from "@/api/characters";
+import charactersApi, { Character } from "@/api/characters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CharacterForm, CharacterFormProps } from "@/features/character-form";
+import { queryClient } from "@/api";
 
 type CharacterPageProps = {
   id: number;
@@ -12,12 +13,18 @@ export function CharacterPage(props: CharacterPageProps) {
   const characterRequest = useQuery(
     ["character", props.id],
     () => charactersApi.getById(props.id),
-    { keepPreviousData: true, staleTime: Infinity }
+    { keepPreviousData: true }
   );
 
   const onSubmit: CharacterFormProps["onSubmit"] = (data) => {
-    debugger;
-    console.log(data);
+    const characterData: Character = {
+      ...data,
+      url: characterRequest.data?.url as string,
+    };
+
+    queryClient.setQueryData(["character", props.id], characterData);
+    // we need to update list query cache as well, but i won't to do it
+    // because it's too verbose, fragile and very weird
   };
 
   return (

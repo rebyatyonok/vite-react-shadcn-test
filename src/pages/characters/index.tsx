@@ -67,7 +67,7 @@ export function CharactersListPage() {
     ["characters", pagination.page + debouncedName],
     ({ signal }) =>
       peoplesApi.getList({ page: pagination.page, search: name }, { signal }),
-    { keepPreviousData: true, staleTime: Infinity }
+    { keepPreviousData: true }
   );
 
   useEffect(() => {

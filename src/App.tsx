@@ -1,5 +1,5 @@
 import { Redirect, Route, Switch } from "wouter";
-import { QueryClientProvider, QueryClient } from "react-query";
+import { QueryClientProvider } from "react-query";
 
 import { CharactersListPage } from "@/pages/characters";
 import { CharacterPage } from "@/pages/characters/:id";
@@ -8,9 +8,9 @@ import { NotFoundPage } from "./pages/404";
 import { Header } from "@/features/header";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
-import "./App.css";
+import { queryClient } from "./api";
 
-const queryClient = new QueryClient();
+import "./App.css";
 
 function App() {
   return (
